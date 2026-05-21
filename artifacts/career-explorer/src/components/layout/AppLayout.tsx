@@ -3,10 +3,14 @@ import { Link, useLocation } from "wouter";
 import { useClerk, useUser } from "@clerk/react";
 import { Button } from "@/components/ui/button";
 import { Compass, Trophy, User as UserIcon, Settings, LogOut, Map, X, Zap } from "lucide-react";
+import { useApp } from "@/context/AppContext";
+import { ThemeLangSwitcher } from "@/components/ThemeLangSwitcher";
+
+const ADMIN_EMAIL = "002159@walesschool.com";
 
 function AnnouncementBanner() {
   const [announcement, setAnnouncement] = useState<{ id: number; message: string } | null>(null);
-  const [dismissed, setDismissed] = useState(false);
+  const [dismissed, setDismissed] = useState<number | null>(null);
 
   useEffect(() => {
     fetch("/api/announcements/active")
@@ -15,13 +19,17 @@ function AnnouncementBanner() {
       .catch(() => {});
   }, []);
 
-  if (!announcement || dismissed) return null;
+  if (!announcement || dismissed === announcement.id) return null;
 
   return (
-    <div className="relative z-50 flex items-center gap-3 px-4 py-3 bg-primary/10 border-b border-primary/30 text-sm font-bold text-primary">
-      <Zap className="w-4 h-4 shrink-0 neon-text" style={{ color: "hsl(185 100% 50%)" }} />
+    <div className="relative z-50 flex items-center gap-3 px-4 py-3 bg-primary/10 border-b border-primary/40 text-sm font-bold text-primary">
+      <Zap className="w-4 h-4 shrink-0 neon-text" />
       <span className="flex-1 text-center">{announcement.message}</span>
-      <button onClick={() => setDismissed(true)} className="shrink-0 opacity-60 hover:opacity-100 transition-opacity">
+      <button
+        onClick={() => setDismissed(announcement.id)}
+        className="shrink-0 opacity-60 hover:opacity-100 transition-opacity"
+        aria-label="Dismiss"
+      >
         <X className="w-4 h-4" />
       </button>
     </div>
@@ -32,8 +40,9 @@ export function Navbar() {
   const { user } = useUser();
   const { signOut } = useClerk();
   const [location] = useLocation();
+  const { t } = useApp();
 
-  const isAdmin = user?.primaryEmailAddress?.emailAddress === "002159@walesschool.com";
+  const isAdmin = user?.primaryEmailAddress?.emailAddress === ADMIN_EMAIL;
 
   return (
     <nav className="sticky top-0 z-50 w-full glass border-b border-border/60">
@@ -54,8 +63,8 @@ export function Navbar() {
               size="sm"
               className={`rounded-xl font-bold transition-all ${location === "/explore" ? "text-primary bg-primary/10 border border-primary/30" : "text-muted-foreground hover:text-primary hover:bg-primary/5"}`}
             >
-              <Map className="w-4 h-4 mr-1.5" />
-              <span className="hidden sm:inline-block">Explore</span>
+              <Map className="w-4 h-4 me-1.5" />
+              <span className="hidden sm:inline-block">{t("navExplore")}</span>
             </Button>
           </Link>
           <Link href="/challenge">
@@ -64,8 +73,8 @@ export function Navbar() {
               size="sm"
               className={`rounded-xl font-bold transition-all ${location === "/challenge" ? "text-accent bg-accent/10 border border-accent/30" : "text-muted-foreground hover:text-accent hover:bg-accent/5"}`}
             >
-              <Trophy className="w-4 h-4 mr-1.5" />
-              <span className="hidden sm:inline-block">Challenges</span>
+              <Trophy className="w-4 h-4 me-1.5" />
+              <span className="hidden sm:inline-block">{t("navChallenges")}</span>
             </Button>
           </Link>
 
@@ -78,8 +87,8 @@ export function Navbar() {
                 size="sm"
                 className={`rounded-xl font-bold transition-all ${location === "/admin" ? "text-secondary bg-secondary/10 border border-secondary/30" : "text-muted-foreground hover:text-secondary hover:bg-secondary/5"}`}
               >
-                <Settings className="w-4 h-4 mr-1.5" />
-                <span className="hidden sm:inline-block">Admin</span>
+                <Settings className="w-4 h-4 me-1.5" />
+                <span className="hidden sm:inline-block">{t("navAdmin")}</span>
               </Button>
             </Link>
           )}
@@ -90,8 +99,8 @@ export function Navbar() {
               size="sm"
               className={`rounded-xl font-bold transition-all ${location === "/profile" ? "text-primary bg-primary/10 border border-primary/30" : "text-muted-foreground hover:text-primary hover:bg-primary/5"}`}
             >
-              <UserIcon className="w-4 h-4 mr-1.5" />
-              <span className="hidden sm:inline-block">Profile</span>
+              <UserIcon className="w-4 h-4 me-1.5" />
+              <span className="hidden sm:inline-block">{t("navProfile")}</span>
             </Button>
           </Link>
 
@@ -99,7 +108,8 @@ export function Navbar() {
             variant="ghost"
             size="sm"
             onClick={() => signOut({ redirectUrl: "/" })}
-            className="rounded-xl ml-1 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+            className="rounded-xl ms-1 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+            title={t("navSignOut")}
           >
             <LogOut className="w-4 h-4" />
           </Button>
@@ -110,6 +120,7 @@ export function Navbar() {
 }
 
 export function Footer() {
+  const { t } = useApp();
   return (
     <footer className="border-t border-border/40 mt-auto">
       <div className="container mx-auto px-4 py-8 flex flex-col items-center justify-center text-center gap-3">
@@ -117,12 +128,10 @@ export function Footer() {
           <Compass className="w-4 h-4 text-primary" />
           <span className="font-display font-bold text-sm text-foreground">Career Explorer</span>
         </div>
-        <p className="text-xs text-muted-foreground font-medium">
-          © 2026 Career Explorer · Made by Hamed for Wales School · All rights reserved
-        </p>
+        <p className="text-xs text-muted-foreground font-medium">{t("copyright")}</p>
         <Link href="/tos">
           <span className="text-xs text-primary/60 hover:text-primary transition-colors font-bold cursor-pointer underline underline-offset-2">
-            Terms of Service
+            {t("tos")}
           </span>
         </Link>
       </div>
@@ -139,6 +148,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         {children}
       </main>
       <Footer />
+      <ThemeLangSwitcher />
     </div>
   );
 }

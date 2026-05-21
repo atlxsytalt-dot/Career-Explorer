@@ -7,6 +7,7 @@ import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider, useQueryClient } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { ThemeLangSwitcher } from "@/components/ThemeLangSwitcher";
 
 // Pages
 import Home from "./pages/Home";
@@ -45,7 +46,7 @@ const clerkAppearance = {
     logoImageUrl: `${window.location.origin}${basePath}/logo.svg`,
   },
   variables: {
-    colorPrimary: "hsl(185 100% 50%)",
+    colorPrimary: "hsl(0 100% 58%)",
     colorForeground: "hsl(200 20% 95%)",
     colorMutedForeground: "hsl(220 15% 60%)",
     colorDanger: "hsl(0 90% 60%)",
@@ -208,6 +209,7 @@ function App() {
         <ClerkProviderWithRoutes />
       </WouterRouter>
       <Toaster />
+      <ThemeLangSwitcher />
     </TooltipProvider>
   );
 }

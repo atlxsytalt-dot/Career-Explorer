@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Nunito:wght@400;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Nunito:wght@400;600;700;800;900&family=Tajawal:wght@400;700;800;900&display=swap');
 @layer theme, base, clerk, components, utilities;
 @import "tailwindcss";
 @import "@clerk/themes/shadcn.css";
@@ -55,8 +55,10 @@
   --radius-3xl: calc(var(--radius) + 16px);
 }
 
+/* ============================================
+   BASE DARK SHARED VARIABLES
+============================================ */
 :root {
-  /* Neon Dark Theme */
   --background: 240 25% 4%;
   --foreground: 200 20% 95%;
 
@@ -68,42 +70,93 @@
   --popover-foreground: 200 20% 95%;
   --popover-border: 240 15% 16%;
 
-  /* Neon Cyan primary */
-  --primary: 185 100% 50%;
-  --primary-foreground: 240 25% 4%;
-
-  /* Neon Purple secondary */
-  --secondary: 270 100% 65%;
-  --secondary-foreground: 0 0% 100%;
-
   --muted: 240 15% 14%;
   --muted-foreground: 220 15% 60%;
-
-  /* Neon Green accent */
-  --accent: 142 100% 50%;
-  --accent-foreground: 240 25% 4%;
 
   --destructive: 0 90% 60%;
   --destructive-foreground: 0 0% 100%;
 
   --border: 240 15% 16%;
   --input: 240 15% 16%;
-  --ring: 185 100% 50%;
 
-  --app-font-sans: 'Nunito', sans-serif;
-  --app-font-display: 'Bricolage Grotesque', sans-serif;
+  --app-font-sans: 'Nunito', 'Tajawal', sans-serif;
+  --app-font-display: 'Bricolage Grotesque', 'Tajawal', sans-serif;
   --app-font-serif: Georgia, serif;
   --app-font-mono: Menlo, monospace;
-
   --radius: 0.75rem;
+}
 
-  --shadow-sm: 0 2px 8px rgba(0,240,255,0.05);
-  --shadow: 0 4px 16px rgba(0,240,255,0.08);
-  --shadow-md: 0 8px 32px rgba(0,240,255,0.12);
-  --shadow-lg: 0 16px 48px rgba(0,240,255,0.15);
-  --shadow-neon: 0 0 20px rgba(0,240,255,0.4), 0 0 40px rgba(0,240,255,0.2);
-  --shadow-neon-purple: 0 0 20px rgba(160,0,255,0.4), 0 0 40px rgba(160,0,255,0.2);
-  --shadow-neon-green: 0 0 20px rgba(0,255,128,0.4), 0 0 40px rgba(0,255,128,0.2);
+/* ============================================
+   NEON RED THEME (default)
+============================================ */
+:root,
+[data-theme="red"] {
+  --primary: 0 100% 58%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 320 100% 65%;
+  --secondary-foreground: 0 0% 100%;
+  --accent: 30 100% 55%;
+  --accent-foreground: 0 0% 100%;
+  --ring: 0 100% 58%;
+
+  --shadow-neon: 0 0 20px rgba(255,34,34,0.5), 0 0 50px rgba(255,34,34,0.25);
+  --shadow-neon-secondary: 0 0 20px rgba(255,0,180,0.45), 0 0 40px rgba(255,0,180,0.2);
+  --shadow-neon-accent: 0 0 20px rgba(255,140,0,0.45), 0 0 40px rgba(255,140,0,0.2);
+  --neon-grid-color: 255 34 34;
+}
+
+/* ============================================
+   NEON GREEN THEME
+============================================ */
+[data-theme="green"] {
+  --primary: 142 100% 48%;
+  --primary-foreground: 240 25% 4%;
+  --secondary: 180 100% 50%;
+  --secondary-foreground: 240 25% 4%;
+  --accent: 90 100% 52%;
+  --accent-foreground: 240 25% 4%;
+  --ring: 142 100% 48%;
+
+  --shadow-neon: 0 0 20px rgba(0,235,100,0.5), 0 0 50px rgba(0,235,100,0.25);
+  --shadow-neon-secondary: 0 0 20px rgba(0,255,255,0.45), 0 0 40px rgba(0,255,255,0.2);
+  --shadow-neon-accent: 0 0 20px rgba(140,255,0,0.45), 0 0 40px rgba(140,255,0,0.2);
+  --neon-grid-color: 0 235 100;
+}
+
+/* ============================================
+   NEON BLUE THEME
+============================================ */
+[data-theme="blue"] {
+  --primary: 220 100% 65%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 270 100% 70%;
+  --secondary-foreground: 0 0% 100%;
+  --accent: 185 100% 55%;
+  --accent-foreground: 240 25% 4%;
+  --ring: 220 100% 65%;
+
+  --shadow-neon: 0 0 20px rgba(68,136,255,0.55), 0 0 50px rgba(68,136,255,0.28);
+  --shadow-neon-secondary: 0 0 20px rgba(160,0,255,0.45), 0 0 40px rgba(160,0,255,0.2);
+  --shadow-neon-accent: 0 0 20px rgba(0,220,255,0.45), 0 0 40px rgba(0,220,255,0.2);
+  --neon-grid-color: 68 136 255;
+}
+
+/* ============================================
+   NEON CYAN THEME
+============================================ */
+[data-theme="cyan"] {
+  --primary: 185 100% 50%;
+  --primary-foreground: 240 25% 4%;
+  --secondary: 270 100% 65%;
+  --secondary-foreground: 0 0% 100%;
+  --accent: 142 100% 50%;
+  --accent-foreground: 240 25% 4%;
+  --ring: 185 100% 50%;
+
+  --shadow-neon: 0 0 20px rgba(0,240,255,0.5), 0 0 50px rgba(0,240,255,0.25);
+  --shadow-neon-secondary: 0 0 20px rgba(160,0,255,0.4), 0 0 40px rgba(160,0,255,0.2);
+  --shadow-neon-accent: 0 0 20px rgba(0,255,128,0.4), 0 0 40px rgba(0,255,128,0.2);
+  --neon-grid-color: 0 240 255;
 }
 
 @layer base {
@@ -113,36 +166,75 @@
   body {
     @apply font-sans antialiased bg-background text-foreground;
     background-image:
-      radial-gradient(ellipse at 20% 10%, hsl(185 100% 50% / 0.04) 0%, transparent 50%),
-      radial-gradient(ellipse at 80% 80%, hsl(270 100% 65% / 0.04) 0%, transparent 50%),
-      radial-gradient(ellipse at 60% 30%, hsl(142 100% 50% / 0.02) 0%, transparent 40%);
+      radial-gradient(ellipse at 20% 10%, hsl(var(--primary) / 0.06) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 80%, hsl(var(--secondary) / 0.05) 0%, transparent 50%),
+      radial-gradient(ellipse at 60% 30%, hsl(var(--accent) / 0.03) 0%, transparent 40%);
     min-height: 100dvh;
+    transition: background-image 0.4s ease;
   }
   h1, h2, h3, h4, h5, h6 {
     @apply font-display tracking-tight;
   }
+
+  [dir="rtl"] {
+    font-family: 'Tajawal', 'Nunito', sans-serif;
+  }
+  [dir="rtl"] h1,
+  [dir="rtl"] h2,
+  [dir="rtl"] h3,
+  [dir="rtl"] h4 {
+    font-family: 'Tajawal', 'Bricolage Grotesque', sans-serif;
+  }
 }
 
-/* Neon glow utilities */
+/* ============================================
+   NEON UTILITIES
+============================================ */
 .neon-text {
   text-shadow: 0 0 10px currentColor, 0 0 30px currentColor;
 }
+.neon-text-primary {
+  color: hsl(var(--primary));
+  text-shadow: 0 0 20px hsl(var(--primary) / 0.7), 0 0 60px hsl(var(--primary) / 0.35);
+}
 .neon-border {
-  box-shadow: 0 0 10px hsl(185 100% 50% / 0.3), inset 0 0 10px hsl(185 100% 50% / 0.05);
+  box-shadow: 0 0 10px hsl(var(--primary) / 0.35), inset 0 0 10px hsl(var(--primary) / 0.06);
 }
-.neon-border-purple {
-  box-shadow: 0 0 10px hsl(270 100% 65% / 0.3), inset 0 0 10px hsl(270 100% 65% / 0.05);
+.neon-border-secondary {
+  box-shadow: 0 0 10px hsl(var(--secondary) / 0.35), inset 0 0 10px hsl(var(--secondary) / 0.06);
 }
-.neon-border-green {
-  box-shadow: 0 0 10px hsl(142 100% 50% / 0.3), inset 0 0 10px hsl(142 100% 50% / 0.05);
+.neon-border-accent {
+  box-shadow: 0 0 10px hsl(var(--accent) / 0.35), inset 0 0 10px hsl(var(--accent) / 0.06);
 }
+
+/* keep legacy aliases */
+.neon-border-green { @apply neon-border-accent; }
+.neon-border-purple { @apply neon-border-secondary; }
+
 .glass {
-  background: hsl(240 20% 8% / 0.8);
+  background: hsl(240 20% 8% / 0.85);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
 .grid-bg {
-  background-image: linear-gradient(hsl(185 100% 50% / 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, hsl(185 100% 50% / 0.04) 1px, transparent 1px);
+  background-image:
+    linear-gradient(hsl(var(--primary) / 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, hsl(var(--primary) / 0.05) 1px, transparent 1px);
   background-size: 40px 40px;
+}
+
+/* Step card neon styling */
+.step-active {
+  background: hsl(var(--primary) / 0.08);
+  border-color: hsl(var(--primary) / 0.6);
+  box-shadow: 0 0 20px hsl(var(--primary) / 0.2);
+}
+.step-done {
+  background: hsl(var(--accent) / 0.08);
+  border-color: hsl(var(--accent) / 0.5);
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
