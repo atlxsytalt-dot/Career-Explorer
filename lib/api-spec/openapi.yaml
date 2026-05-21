@@ -1,22 +1,29 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: Career Explorer API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: careers
+    description: Career catalogue
+  - name: users
+    description: User profiles and progress
+  - name: challenges
+    description: Career challenges and skills
+  - name: admin
+    description: Admin operations
+
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,13 +31,537 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /careers:
+    get:
+      operationId: listCareers
+      tags: [careers]
+      summary: List all careers
+      parameters:
+        - name: category
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of careers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Career"
+
+  /careers/{id}:
+    get:
+      operationId: getCareer
+      tags: [careers]
+      summary: Get career detail with steps
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Career with steps
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CareerDetail"
+        "404":
+          description: Not found
+
+  /users/me:
+    get:
+      operationId: getMyProfile
+      tags: [users]
+      summary: Get current user profile
+      responses:
+        "200":
+          description: User profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserProfile"
+        "401":
+          description: Unauthorized
+    patch:
+      operationId: updateMyProfile
+      tags: [users]
+      summary: Update current user profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserProfileUpdate"
+      responses:
+        "200":
+          description: Updated profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserProfile"
+
+  /users/me/progress:
+    get:
+      operationId: getMyProgress
+      tags: [users]
+      summary: Get all career progress for current user
+      responses:
+        "200":
+          description: Career progress list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CareerProgress"
+    post:
+      operationId: startCareer
+      tags: [users]
+      summary: Start a career (create progress record)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StartCareerInput"
+      responses:
+        "201":
+          description: Created progress
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CareerProgress"
+
+  /users/me/progress/{careerId}:
+    patch:
+      operationId: updateCareerProgress
+      tags: [users]
+      summary: Update step completion for a career
+      parameters:
+        - name: careerId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProgressUpdate"
+      responses:
+        "200":
+          description: Updated progress
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CareerProgress"
+
+  /users/me/challenges:
+    get:
+      operationId: getMyChallenges
+      tags: [challenges]
+      summary: Get challenges for current user's active career
+      parameters:
+        - name: careerId
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Challenges list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Challenge"
+
+  /users/me/challenges/{challengeId}/answer:
+    post:
+      operationId: answerChallenge
+      tags: [challenges]
+      summary: Answer a career challenge
+      parameters:
+        - name: challengeId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChallengeAnswerInput"
+      responses:
+        "200":
+          description: Answer result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChallengeResult"
+
+  /stats:
+    get:
+      operationId: getStats
+      tags: [users]
+      summary: Public stats - popular careers, total users
+      responses:
+        "200":
+          description: Stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Stats"
+
+  /admin/users:
+    get:
+      operationId: adminListUsers
+      tags: [admin]
+      summary: List all users (admin only)
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: User list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminUserList"
+        "403":
+          description: Forbidden
+
+  /admin/users/{userId}/ban:
+    patch:
+      operationId: adminBanUser
+      tags: [admin]
+      summary: Ban or unban a user
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BanUserInput"
+      responses:
+        "200":
+          description: Updated user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminUser"
+        "403":
+          description: Forbidden
+
+  /admin/users/{userId}/role:
+    patch:
+      operationId: adminSetRole
+      tags: [admin]
+      summary: Set special role for a user
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SetRoleInput"
+      responses:
+        "200":
+          description: Updated user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminUser"
+        "403":
+          description: Forbidden
+
+  /admin/stats:
+    get:
+      operationId: adminGetStats
+      tags: [admin]
+      summary: Detailed admin stats
+      responses:
+        "200":
+          description: Admin stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminStats"
+        "403":
+          description: Forbidden
+
 components:
   schemas:
     HealthStatus:
       type: object
+      required: [status]
       properties:
         status:
           type: string
-      required:
-        - status
 
+    Career:
+      type: object
+      required: [id, title, category, icon, description, stepCount]
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        category:
+          type: string
+        icon:
+          type: string
+        description:
+          type: string
+        stepCount:
+          type: integer
+        featured:
+          type: boolean
+
+    CareerStep:
+      type: object
+      required: [id, careerId, order, title, description]
+      properties:
+        id:
+          type: integer
+        careerId:
+          type: integer
+        order:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        tip:
+          type: ["string", "null"]
+
+    CareerDetail:
+      type: object
+      required: [id, title, category, icon, description, stepCount, steps]
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        category:
+          type: string
+        icon:
+          type: string
+        description:
+          type: string
+        stepCount:
+          type: integer
+        featured:
+          type: boolean
+        steps:
+          type: array
+          items:
+            $ref: "#/components/schemas/CareerStep"
+
+    UserProfile:
+      type: object
+      required: [id, clerkId, displayName, grade, role, isBanned, createdAt]
+      properties:
+        id:
+          type: integer
+        clerkId:
+          type: string
+        displayName:
+          type: string
+        grade:
+          type: string
+        role:
+          type: string
+        isBanned:
+          type: boolean
+        activeCareer:
+          type: ["integer", "null"]
+        createdAt:
+          type: string
+
+    UserProfileUpdate:
+      type: object
+      properties:
+        displayName:
+          type: string
+        grade:
+          type: string
+
+    CareerProgress:
+      type: object
+      required: [id, careerId, userId, completedSteps, totalSteps, completed, startedAt]
+      properties:
+        id:
+          type: integer
+        careerId:
+          type: integer
+        userId:
+          type: integer
+        completedSteps:
+          type: integer
+        totalSteps:
+          type: integer
+        completed:
+          type: boolean
+        startedAt:
+          type: string
+        completedAt:
+          type: ["string", "null"]
+
+    StartCareerInput:
+      type: object
+      required: [careerId]
+      properties:
+        careerId:
+          type: integer
+
+    ProgressUpdate:
+      type: object
+      required: [completedSteps]
+      properties:
+        completedSteps:
+          type: integer
+        completed:
+          type: boolean
+
+    Challenge:
+      type: object
+      required: [id, careerId, question, options, difficulty]
+      properties:
+        id:
+          type: integer
+        careerId:
+          type: integer
+        question:
+          type: string
+        options:
+          type: array
+          items:
+            type: string
+        difficulty:
+          type: string
+
+    ChallengeAnswerInput:
+      type: object
+      required: [answer]
+      properties:
+        answer:
+          type: string
+
+    ChallengeResult:
+      type: object
+      required: [correct, explanation, points]
+      properties:
+        correct:
+          type: boolean
+        explanation:
+          type: string
+        points:
+          type: integer
+
+    Stats:
+      type: object
+      required: [totalUsers, totalCareers, popularCareers]
+      properties:
+        totalUsers:
+          type: integer
+        totalCareers:
+          type: integer
+        popularCareers:
+          type: array
+          items:
+            $ref: "#/components/schemas/Career"
+
+    AdminUser:
+      type: object
+      required: [id, clerkId, displayName, grade, role, isBanned, email, createdAt]
+      properties:
+        id:
+          type: integer
+        clerkId:
+          type: string
+        displayName:
+          type: string
+        grade:
+          type: string
+        role:
+          type: string
+        isBanned:
+          type: boolean
+        email:
+          type: string
+        createdAt:
+          type: string
+
+    AdminUserList:
+      type: object
+      required: [users, total, page, limit]
+      properties:
+        users:
+          type: array
+          items:
+            $ref: "#/components/schemas/AdminUser"
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+
+    BanUserInput:
+      type: object
+      required: [banned]
+      properties:
+        banned:
+          type: boolean
+        reason:
+          type: string
+
+    SetRoleInput:
+      type: object
+      required: [role]
+      properties:
+        role:
+          type: string
+
+    AdminStats:
+      type: object
+      required: [totalUsers, totalCareers, activeThisWeek, popularCareers, recentUsers]
+      properties:
+        totalUsers:
+          type: integer
+        totalCareers:
+          type: integer
+        activeThisWeek:
+          type: integer
+        popularCareers:
+          type: array
+          items:
+            $ref: "#/components/schemas/Career"
+        recentUsers:
+          type: array
+          items:
+            $ref: "#/components/schemas/AdminUser"
