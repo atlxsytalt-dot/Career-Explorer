@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "Career Explorer"
+version = "1.0.0"
+id = "artifacts/career-explorer"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 24466
+
+[services.development]
+run = "pnpm --filter @workspace/career-explorer run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/career-explorer", "run", "build" ]
+publicDir = "artifacts/career-explorer/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "24466"
+BASE_PATH = "/"
