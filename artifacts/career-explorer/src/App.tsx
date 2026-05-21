@@ -16,6 +16,7 @@ import Challenge from "./pages/Challenge";
 import Profile from "./pages/Profile";
 import Admin from "./pages/Admin";
 import Onboarding from "./pages/Onboarding";
+import TOS from "./pages/TOS";
 import NotFound from "./pages/not-found";
 
 const clerkPubKey = publishableKeyFromHost(
@@ -44,41 +45,32 @@ const clerkAppearance = {
     logoImageUrl: `${window.location.origin}${basePath}/logo.svg`,
   },
   variables: {
-    colorPrimary: "hsl(15 100% 55%)",
-    colorForeground: "hsl(230 40% 15%)",
-    colorMutedForeground: "hsl(220 15% 45%)",
-    colorDanger: "hsl(0 85% 55%)",
-    colorBackground: "hsl(0 0% 100%)",
-    colorInput: "hsl(0 0% 100%)",
-    colorInputForeground: "hsl(230 40% 15%)",
-    colorNeutral: "hsl(220 20% 90%)",
+    colorPrimary: "hsl(185 100% 50%)",
+    colorForeground: "hsl(200 20% 95%)",
+    colorMutedForeground: "hsl(220 15% 60%)",
+    colorDanger: "hsl(0 90% 60%)",
+    colorBackground: "hsl(240 20% 8%)",
+    colorInput: "hsl(240 15% 14%)",
+    colorInputForeground: "hsl(200 20% 95%)",
+    colorNeutral: "hsl(240 15% 16%)",
     fontFamily: "'Nunito', sans-serif",
-    borderRadius: "1rem",
+    borderRadius: "0.75rem",
   },
   elements: {
     rootBox: "w-full flex justify-center",
-    cardBox: "bg-white rounded-3xl w-[440px] max-w-full overflow-hidden shadow-xl border-4 border-primary/10",
-    card: "!shadow-none !border-0 !bg-transparent !rounded-none",
-    footer: "!shadow-none !border-0 !bg-transparent !rounded-none",
-    headerTitle: "font-display text-3xl text-foreground font-bold",
-    headerSubtitle: "text-muted-foreground",
-    socialButtonsBlockButtonText: "font-bold text-foreground",
-    formFieldLabel: "font-bold text-foreground",
-    footerActionLink: "font-bold text-primary hover:text-primary/80",
-    footerActionText: "text-muted-foreground",
-    dividerText: "text-muted-foreground font-bold",
-    identityPreviewEditButton: "text-primary",
-    formFieldSuccessText: "text-green-600",
-    alertText: "text-destructive",
-    logoBox: "flex justify-center mb-4",
-    logoImage: "w-16 h-16",
-    socialButtonsBlockButton: "border-2 border-muted hover:border-primary/50 rounded-xl",
-    formButtonPrimary: "bg-primary hover:bg-primary/90 text-white font-bold rounded-xl h-12 shadow-sm transition-transform active:scale-95",
-    formFieldInput: "rounded-xl border-2 border-muted focus:border-primary focus:ring-primary/20",
+    cardBox: "rounded-2xl w-[440px] max-w-full overflow-hidden shadow-2xl border border-[hsl(240_15%_16%)]",
+    card: "!shadow-none !border-0 !rounded-none",
+    footer: "!shadow-none !border-0 !rounded-none",
+    headerTitle: "font-display text-3xl font-bold",
+    socialButtonsBlockButtonText: "font-bold",
+    formFieldLabel: "font-bold",
+    footerActionLink: "font-bold",
+    dividerText: "font-bold",
+    socialButtonsBlockButton: "border border-[hsl(240_15%_16%)] rounded-xl hover:border-[hsl(185_100%_50%/0.5)]",
+    formButtonPrimary: "font-bold rounded-xl h-12 transition-transform active:scale-95",
+    formFieldInput: "rounded-xl border border-[hsl(240_15%_16%)]",
     footerAction: "justify-center",
-    dividerLine: "bg-muted",
-    alert: "bg-destructive/10 border-destructive text-destructive rounded-xl",
-    otpCodeFieldInput: "border-2 rounded-xl border-muted",
+    otpCodeFieldInput: "rounded-xl border border-[hsl(240_15%_16%)]",
     formFieldRow: "mb-4",
     main: "gap-6",
   },
@@ -200,7 +192,8 @@ function ClerkProviderWithRoutes() {
           <Route path="/challenge" component={() => <ProtectedRoute component={Challenge} />} />
           <Route path="/profile" component={() => <ProtectedRoute component={Profile} />} />
           <Route path="/admin" component={() => <AdminRoute component={Admin} />} />
-          
+          <Route path="/tos" component={TOS} />
+
           <Route component={NotFound} />
         </Switch>
       </QueryClientProvider>
