@@ -3,19 +3,33 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
-    <title>Career Explorer</title>
-    <meta name="description" content="Career Explorer — built on Replit. Update this description to reflect the app." />
+    <title>Career Explorer — Wales School</title>
+    <meta name="description" content="Career Explorer — Discover 100+ dream careers, complete skill challenges, and earn cool roles. Made for Wales School by Hamed." />
     <meta name="robots" content="index, follow" />
-    <meta property="og:title" content="Career Explorer" />
-    <meta property="og:description" content="Career Explorer — built on Replit. Update this description to reflect the app." />
+    <meta property="og:title" content="Career Explorer — Wales School" />
+    <meta property="og:description" content="Discover amazing careers, complete skill challenges, and earn cool roles as you find your path." />
     <meta property="og:type" content="website" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Career Explorer" />
-    <meta name="twitter:description" content="Career Explorer — built on Replit. Update this description to reflect the app." />
+    <meta name="twitter:title" content="Career Explorer — Wales School" />
+    <meta name="twitter:description" content="Explore 100+ careers, complete challenges, earn roles. Made for Wales School." />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Apply theme BEFORE any CSS renders to avoid flash -->
+    <script>
+      (function () {
+        try {
+          var theme = localStorage.getItem('ce_theme') || 'red';
+          var lang  = localStorage.getItem('ce_lang')  || 'en';
+          document.documentElement.setAttribute('data-theme', theme);
+          document.documentElement.setAttribute('dir',  lang === 'ar' ? 'rtl' : 'ltr');
+          document.documentElement.setAttribute('lang', lang);
+        } catch (e) {
+          document.documentElement.setAttribute('data-theme', 'red');
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

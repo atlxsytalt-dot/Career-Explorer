@@ -15,6 +15,9 @@ import { logger } from "./lib/logger";
 
 const app: Express = express();
 
+// Trust the Replit reverse proxy so rate-limiting and IP extraction work correctly
+app.set("trust proxy", 1);
+
 app.use(
   pinoHttp({
     logger,
