@@ -2,11 +2,12 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { useClerk, useUser } from "@clerk/react";
 import { Button } from "@/components/ui/button";
-import { Compass, Trophy, User as UserIcon, Settings, LogOut, Map, X, Zap } from "lucide-react";
+import { Compass, Trophy, User as UserIcon, Settings, LogOut, Map, X, Zap, School } from "lucide-react";
 import { useApp } from "@/context/AppContext";
 import { ThemeLangSwitcher } from "@/components/ThemeLangSwitcher";
 
 const ADMIN_EMAIL = "002159@walesschool.com";
+const TEACHER_EMAIL = "saeedparker@walesschool.com";
 
 function AnnouncementBanner() {
   const [announcement, setAnnouncement] = useState<{ id: number; message: string } | null>(null);
@@ -42,7 +43,9 @@ export function Navbar() {
   const [location] = useLocation();
   const { t } = useApp();
 
-  const isAdmin = user?.primaryEmailAddress?.emailAddress === ADMIN_EMAIL;
+  const email = user?.primaryEmailAddress?.emailAddress ?? "";
+  const isAdmin = email === ADMIN_EMAIL;
+  const isTeacher = email === TEACHER_EMAIL;
 
   return (
     <nav className="sticky top-0 z-50 w-full glass border-b border-border/60">
@@ -89,6 +92,18 @@ export function Navbar() {
               >
                 <Settings className="w-4 h-4 me-1.5" />
                 <span className="hidden sm:inline-block">{t("navAdmin")}</span>
+              </Button>
+            </Link>
+          )}
+          {isTeacher && (
+            <Link href="/teacher">
+              <Button
+                variant="ghost"
+                size="sm"
+                className={`rounded-xl font-bold transition-all ${location === "/teacher" ? "text-accent bg-accent/10 border border-accent/30" : "text-muted-foreground hover:text-accent hover:bg-accent/5"}`}
+              >
+                <School className="w-4 h-4 me-1.5" />
+                <span className="hidden sm:inline-block">Teacher</span>
               </Button>
             </Link>
           )}

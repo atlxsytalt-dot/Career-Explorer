@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { ClerkProvider, SignIn, SignUp, Show, useClerk, useUser } from '@clerk/react';
 import { publishableKeyFromHost } from '@clerk/react/internal';
 import { shadcn } from '@clerk/themes';
-import { Switch, Route, useLocation, Router as WouterRouter, Redirect, Link } from 'wouter';
+import { Switch, Route, useLocation, Router as WouterRouter, Redirect } from 'wouter';
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider, useQueryClient } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -16,6 +16,7 @@ import CareerDetail from "./pages/CareerDetail";
 import Challenge from "./pages/Challenge";
 import Profile from "./pages/Profile";
 import Admin from "./pages/Admin";
+import Teacher from "./pages/Teacher";
 import Onboarding from "./pages/Onboarding";
 import TOS from "./pages/TOS";
 import NotFound from "./pages/not-found";
@@ -148,13 +149,32 @@ function ProtectedRoute({ component: Component }: { component: React.ComponentTy
 function AdminRoute({ component: Component }: { component: React.ComponentType }) {
   const { user, isLoaded } = useUser();
   const isAdmin = user?.primaryEmailAddress?.emailAddress === "002159@walesschool.com";
-  
+
   if (!isLoaded) return <div className="min-h-screen flex items-center justify-center"><div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" /></div>;
-  
+
   return (
     <>
       <Show when="signed-in">
         {isAdmin ? <Component /> : <Redirect to="/explore" />}
+      </Show>
+      <Show when="signed-out">
+        <Redirect to="/" />
+      </Show>
+    </>
+  );
+}
+
+function TeacherRoute({ component: Component }: { component: React.ComponentType }) {
+  const { user, isLoaded } = useUser();
+  const email = user?.primaryEmailAddress?.emailAddress ?? "";
+  const isAllowed = email === "saeedparker@walesschool.com" || email === "002159@walesschool.com";
+
+  if (!isLoaded) return <div className="min-h-screen flex items-center justify-center"><div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" /></div>;
+
+  return (
+    <>
+      <Show when="signed-in">
+        {isAllowed ? <Component /> : <Redirect to="/explore" />}
       </Show>
       <Show when="signed-out">
         <Redirect to="/" />
@@ -174,8 +194,8 @@ function ClerkProviderWithRoutes() {
       signInUrl={`${basePath}/sign-in`}
       signUpUrl={`${basePath}/sign-up`}
       localization={{
-        signIn: { start: { title: "Welcome Explorer!", subtitle: "Ready for an adventure?" } },
-        signUp: { start: { title: "Start Exploring!", subtitle: "What will YOU become?" } },
+        signIn: { start: { title: "Welcome Explorer! 🚀", subtitle: "Ready for an adventure?" } },
+        signUp: { start: { title: "Start Exploring! ✨", subtitle: "What will YOU become?" } },
       }}
       routerPush={(to) => setLocation(stripBase(to))}
       routerReplace={(to) => setLocation(stripBase(to), { replace: true })}
@@ -186,13 +206,14 @@ function ClerkProviderWithRoutes() {
           <Route path="/" component={HomeRedirect} />
           <Route path="/sign-in/*?" component={SignInPage} />
           <Route path="/sign-up/*?" component={SignUpPage} />
-          
+
           <Route path="/onboarding" component={() => <ProtectedRoute component={Onboarding} />} />
           <Route path="/explore" component={() => <ProtectedRoute component={Explore} />} />
           <Route path="/career/:id" component={() => <ProtectedRoute component={CareerDetail} />} />
           <Route path="/challenge" component={() => <ProtectedRoute component={Challenge} />} />
           <Route path="/profile" component={() => <ProtectedRoute component={Profile} />} />
           <Route path="/admin" component={() => <AdminRoute component={Admin} />} />
+          <Route path="/teacher" component={() => <TeacherRoute component={Teacher} />} />
           <Route path="/tos" component={TOS} />
 
           <Route component={NotFound} />

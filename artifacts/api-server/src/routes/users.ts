@@ -25,6 +25,12 @@ async function getOrCreateUser(clerkId: string, email: string) {
   return created;
 }
 
+function isBanActive(user: any): boolean {
+  if (!user.isBanned) return false;
+  if (!user.banUntil) return true;
+  return new Date() < new Date(user.banUntil);
+}
+
 async function requireAuth(req: any, res: any, next: any) {
   const auth = getAuth(req);
   if (!auth?.userId) {
@@ -33,8 +39,11 @@ async function requireAuth(req: any, res: any, next: any) {
   }
   const email = (auth as any).sessionClaims?.email ?? "";
   req.dbUser = await getOrCreateUser(auth.userId, email);
-  if (req.dbUser.isBanned) {
-    res.status(403).json({ error: "Your account has been banned." });
+  if (isBanActive(req.dbUser)) {
+    const until = req.dbUser.banUntil
+      ? `until ${new Date(req.dbUser.banUntil).toLocaleDateString()}`
+      : "permanently";
+    res.status(403).json({ error: `Your account has been banned ${until}.`, reason: req.dbUser.banReason });
     return;
   }
   next();

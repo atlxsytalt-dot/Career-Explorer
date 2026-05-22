@@ -11,6 +11,7 @@ export const usersTable = pgTable("users", {
   role: text("role").notNull().default("student"),
   isBanned: boolean("is_banned").notNull().default(false),
   banReason: text("ban_reason"),
+  banUntil: timestamp("ban_until", { withTimezone: true }),
   activeCareer: integer("active_career"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow().$onUpdate(() => new Date()),
