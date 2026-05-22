@@ -1,0 +1,8 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "t7VNQDOLoqvom5tP_bD0T"
+uri = "file://career-explorer-export.zip"
+type = "unspecified"
+title = "Career Explorer — Full Export (Source + Secrets + DB Backup)"
