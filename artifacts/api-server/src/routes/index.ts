@@ -6,6 +6,7 @@ import challengesRouter from "./challenges";
 import adminRouter from "./admin";
 import announcementsRouter from "./announcements";
 import teacherRouter from "./teacher";
+import leaderboardRouter from "./leaderboard";
 
 const router: IRouter = Router();
 
@@ -16,5 +17,6 @@ router.use(challengesRouter);
 router.use(adminRouter);
 router.use(announcementsRouter);
 router.use(teacherRouter);
+router.use(leaderboardRouter);
 
 export default router;

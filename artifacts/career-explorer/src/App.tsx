@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { ClerkProvider, SignIn, SignUp, Show, useClerk, useUser } from '@clerk/react';
 import { publishableKeyFromHost } from '@clerk/react/internal';
 import { shadcn } from '@clerk/themes';
@@ -8,6 +8,7 @@ import { QueryClientProvider, useQueryClient } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeLangSwitcher } from "@/components/ThemeLangSwitcher";
+import { AnimatePresence } from "framer-motion";
 
 // Pages
 import Home from "./pages/Home";
@@ -19,6 +20,7 @@ import Admin from "./pages/Admin";
 import Teacher from "./pages/Teacher";
 import Onboarding from "./pages/Onboarding";
 import TOS from "./pages/TOS";
+import Leaderboard from "./pages/Leaderboard";
 import NotFound from "./pages/not-found";
 
 const clerkPubKey = publishableKeyFromHost(
@@ -183,6 +185,31 @@ function TeacherRoute({ component: Component }: { component: React.ComponentType
   );
 }
 
+function AnimatedRoutes() {
+  const [location] = useLocation();
+  return (
+    <AnimatePresence mode="wait">
+      <Switch key={location} location={location}>
+        <Route path="/" component={HomeRedirect} />
+        <Route path="/sign-in/*?" component={SignInPage} />
+        <Route path="/sign-up/*?" component={SignUpPage} />
+
+        <Route path="/onboarding" component={() => <ProtectedRoute component={Onboarding} />} />
+        <Route path="/explore" component={() => <ProtectedRoute component={Explore} />} />
+        <Route path="/career/:id" component={() => <ProtectedRoute component={CareerDetail} />} />
+        <Route path="/challenge" component={() => <ProtectedRoute component={Challenge} />} />
+        <Route path="/profile" component={() => <ProtectedRoute component={Profile} />} />
+        <Route path="/leaderboard" component={() => <ProtectedRoute component={Leaderboard} />} />
+        <Route path="/admin" component={() => <AdminRoute component={Admin} />} />
+        <Route path="/teacher" component={() => <TeacherRoute component={Teacher} />} />
+        <Route path="/tos" component={TOS} />
+
+        <Route component={NotFound} />
+      </Switch>
+    </AnimatePresence>
+  );
+}
+
 function ClerkProviderWithRoutes() {
   const [, setLocation] = useLocation();
 
@@ -202,22 +229,7 @@ function ClerkProviderWithRoutes() {
     >
       <QueryClientProvider client={queryClient}>
         <ClerkQueryClientCacheInvalidator />
-        <Switch>
-          <Route path="/" component={HomeRedirect} />
-          <Route path="/sign-in/*?" component={SignInPage} />
-          <Route path="/sign-up/*?" component={SignUpPage} />
-
-          <Route path="/onboarding" component={() => <ProtectedRoute component={Onboarding} />} />
-          <Route path="/explore" component={() => <ProtectedRoute component={Explore} />} />
-          <Route path="/career/:id" component={() => <ProtectedRoute component={CareerDetail} />} />
-          <Route path="/challenge" component={() => <ProtectedRoute component={Challenge} />} />
-          <Route path="/profile" component={() => <ProtectedRoute component={Profile} />} />
-          <Route path="/admin" component={() => <AdminRoute component={Admin} />} />
-          <Route path="/teacher" component={() => <TeacherRoute component={Teacher} />} />
-          <Route path="/tos" component={TOS} />
-
-          <Route component={NotFound} />
-        </Switch>
+        <AnimatedRoutes />
       </QueryClientProvider>
     </ClerkProvider>
   );
