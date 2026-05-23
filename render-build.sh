@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-echo "=== Installing pnpm ==="
-npm install -g pnpm
+echo "=== Enabling pnpm via Corepack (built into Node.js) ==="
+corepack enable
+corepack prepare pnpm@latest --activate
 
 echo "=== Installing dependencies ==="
 pnpm install --frozen-lockfile
