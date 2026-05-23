@@ -12,6 +12,9 @@ import {
 } from "./middlewares/clerkProxyMiddleware";
 import router from "./routes";
 import { logger } from "./lib/logger";
+import path from "path";
+import { fileURLToPath } from "url";
+import fs from "fs";
 
 const app: Express = express();
 
@@ -80,5 +83,30 @@ app.use(
 app.use("/api/admin", adminLimiter);
 app.use("/api", generalLimiter);
 app.use("/api", router);
+
+// In production, serve the built React frontend so everything runs on one domain.
+// This is required for Clerk auth cookies to work correctly on Render.com.
+if (process.env.NODE_ENV === "production") {
+  const frontendDist = path.resolve(
+    path.dirname(fileURLToPath(import.meta.url)),
+    "..",
+    "..",
+    "..",
+    "artifacts",
+    "career-explorer",
+    "dist",
+    "public",
+  );
+
+  if (fs.existsSync(frontendDist)) {
+    logger.info({ frontendDist }, "Serving static frontend");
+    app.use(express.static(frontendDist));
+    app.get("*", (_req, res) => {
+      res.sendFile(path.join(frontendDist, "index.html"));
+    });
+  } else {
+    logger.warn({ frontendDist }, "Frontend dist not found — skipping static serving");
+  }
+}
 
 export default app;
